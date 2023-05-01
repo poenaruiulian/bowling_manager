@@ -27,6 +27,13 @@ const styles = StyleSheet.create({
         fontWeight:"bold",
         color:"white"
     },
+
+    header:{
+        width:"100%",
+        flexDirection:"row",
+        justifyContent:"space-between",
+        padding:20
+    }
 })
 
 export {styles};
