@@ -3,23 +3,23 @@ import { createNativeStackNavigator } from  '@react-navigation/native-stack';
 import {
     getData
 } from "./helpers/asyncStorageFunctions"
-import {useContext, useEffect, useState} from "react";
+import {useEffect, useState} from "react";
 
 const Stack = createNativeStackNavigator()
 
 import Home from "./screens/Home";
 import Login from "./screens/Login";
 import Register from "./screens/Register";
-
-import {ActivityIndicator} from "react-native";
+import Lane from "./screens/Lane";
 
 import {AuthContext} from "./context/AuthContext";
+
 
 const Application = () => {
     return(
         <Stack.Navigator>
             <Stack.Screen options={{headerShown: false}} name={"Home"} component={Home}/>
-            {/*<Stack.Screen name={"Lane"}/>*/}
+            <Stack.Screen options={{headerShown: false}} name={"Lane"} component={Lane}/>
         </Stack.Navigator>
     )
 }
@@ -36,14 +36,28 @@ const Auth = () => {
 
 export default function App() {
     const [isLogged, setIsLogged]= useState(false)
+    const [lanes, setLanes] = useState()
     const get = async()=>{
         await getData("isLogged").then(res=>{
             setIsLogged(res === true);
         });
+        await fetch("http://192.168.100.26:1337/api/lanes",{method:"GET"})
+            .then(resp=>resp.json())
+            .then(resp=>{
+                let aux = [];
+                resp.data.map(lane=>{
+                    aux = [...aux,{
+                        "players":lane.attributes.players,
+                        "start":lane.attributes.start,
+                        "available":lane.attributes.available
+                    }]
+                })
+                setLanes(aux);
+            })
     }
-    get();
+    useEffect(()=>{get();},[])
     return (
-        <AuthContext.Provider value={{isLogged,setIsLogged}}>
+        <AuthContext.Provider value={{isLogged,setIsLogged,lanes,setLanes}}>
             <NavigationContainer>
                 {
                     isLogged === true ? <Application /> : <Auth />

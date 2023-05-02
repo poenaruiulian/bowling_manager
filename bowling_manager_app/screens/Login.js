@@ -1,4 +1,4 @@
-import {View, Text, TextInput, TouchableOpacity} from "react-native";
+import {View, Text, TextInput, TouchableOpacity, Image} from "react-native";
 import {styles} from "../styles/styles";
 import {useContext, useState} from "react";
 import {useNavigation} from "@react-navigation/native";
@@ -20,6 +20,7 @@ export default function Login(){
             flexDirection:"column",
             gap:"20"
         }]}>
+            <Image source={require("../styles/images/available_bowling.png")} style={{height:100,width:100}}/>
             <TextInput
                 placeholder={"Email"}
                 style={styles.inputText}
@@ -59,7 +60,7 @@ export default function Login(){
             <TouchableOpacity
                 onPress={()=>{navigator.navigate("Register")}}
             >
-                <Text  style={{color:"blue"}}>No account? Register</Text>
+                <Text  style={{color:"#212A3E"}}>No account? Register</Text>
             </TouchableOpacity>
         </View>
     )
