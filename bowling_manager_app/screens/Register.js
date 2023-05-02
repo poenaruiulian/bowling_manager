@@ -1,4 +1,4 @@
-import {View, Text, TextInput, TouchableOpacity} from "react-native";
+import {View, Text, TextInput, TouchableOpacity, Image} from "react-native";
 import {styles} from "../styles/styles";
 import {useNavigation} from "@react-navigation/native";
 import {useContext, useState} from "react";
@@ -21,6 +21,7 @@ export default function Register(){
             flexDirection:"column",
             gap:"20"
         }]}>
+            <Image source={require("../styles/images/available_bowling.png")} style={{height:100,width:100}}/>
             <TextInput
                 placeholder={"Username"}
                 style={styles.inputText}
@@ -69,7 +70,7 @@ export default function Register(){
             <TouchableOpacity
                 onPress={()=>{navigator.goBack()}}
             >
-                <Text  style={{color:"blue"}}>Account? Login</Text>
+                <Text  style={{color:"#212A3E"}}>Account? Login</Text>
             </TouchableOpacity>
         </View>
     )

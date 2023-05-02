@@ -1,36 +1,49 @@
-import {View, Text, TouchableOpacity, Image} from "react-native";
+import {View, Text, TouchableOpacity, Image, FlatList} from "react-native";
 import {styles} from "../styles/styles";
 import {getData, getUser, setData} from "../helpers/asyncStorageFunctions";
 import {useNavigation} from "@react-navigation/native";
 import {AuthContext} from "../context/AuthContext";
-import {useContext, useState} from "react";
+import {useContext, useEffect, useState} from "react";
 import KSpacer from "../components/kSpacer";
+import KLane from "../components/kLane";
 
 export default function Home(){
     const navigator = useNavigation();
     const {isLogged, setIsLogged} = useContext(AuthContext)
     const [username,setUsername] = useState("")
+    const {lanes, setLanes} = useContext(AuthContext)
+    const [numberOfLanes, setNumberOfLanes] = useState(0)
     const get = async()=>{
         await getUser().then(res=>{
             setUsername(res)
         })
     }
-    get();
+    get()
     return (
         <View style={styles.container}>
-            <KSpacer height={50}/>
-                <View style={styles.header}>
-                    <Text style={{fontSize:30}}>{username}</Text>
-                    <TouchableOpacity
-                        onPress={()=>{
-                            setData("isLogged",'false');
-                            setIsLogged(false)
+            <KSpacer height={20}/>
+            <View style={styles.header}>
+                <Text style={{fontSize:30}}>{username}</Text>
+                <TouchableOpacity
+                    onPress={()=>{
+                        setData("isLogged",'false');
+                        setIsLogged(false)
+                    }}
+                >
+                    <Image source={require("../styles/icons/logout.png")} style={{height:30,width:30}}/>
+                </TouchableOpacity>
+            </View>
+            <FlatList
+                style={{width:"100%"}}
+                data={lanes}
+                renderItem={({item}) =>
 
-                        }}
-                    >
-                        <Image source={require("../styles/icons/logout.png")} style={{height:30,width:30}}/>
-                    </TouchableOpacity>
-                </View>
+                    <View>
+                        <KLane players={item.players} start={item.start} available={item.available} number={lanes.findIndex(i=>i===item)+1}/>
+                        <KSpacer height={20}/>
+                    </View>
+            }
+            />
         </View>
     )
 }
