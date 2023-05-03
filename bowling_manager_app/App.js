@@ -11,6 +11,7 @@ import Home from "./screens/Home";
 import Login from "./screens/Login";
 import Register from "./screens/Register";
 import Lane from "./screens/Lane";
+import {ip} from "./ipConfig"
 
 import {AuthContext} from "./context/AuthContext";
 
@@ -41,7 +42,7 @@ export default function App() {
         await getData("isLogged").then(res=>{
             setIsLogged(res === true);
         });
-        await fetch("http://192.168.100.26:1337/api/lanes",{method:"GET"})
+        await fetch("http://"+ip+":1337/api/lanes",{method:"GET"})
             .then(resp=>resp.json())
             .then(resp=>{
                 let aux = [];
