@@ -6,6 +6,7 @@ import axios from 'axios';
 
 import {getData, setData} from "../helpers/asyncStorageFunctions";
 import {AuthContext} from "../context/AuthContext";
+import {ip} from "../ipConfig"
 
 export default function Login(){
     const [email, setEmail] =useState("")
@@ -40,7 +41,7 @@ export default function Login(){
                 onPress={()=> {
                     console.log(email, password)
                     axios
-                        .post('http://192.168.100.26:1337/api/auth/local', {
+                        .post('http://'+ip+':1337/api/auth/local', {
                             identifier:email,
                             password:password
                         })

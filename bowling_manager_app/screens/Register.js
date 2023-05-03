@@ -5,6 +5,7 @@ import {useContext, useState} from "react";
 import axios from 'axios';
 import {AuthContext} from "../context/AuthContext";
 import {setData} from "../helpers/asyncStorageFunctions";
+import {ip} from "../ipConfig"
 
 export default function Register(){
     const navigator = useNavigation();
@@ -49,7 +50,7 @@ export default function Register(){
                 style={styles.btn}
                 onPress={()=>{
                     axios
-                        .post('http://192.168.100.26:1337/api/auth/local/register', {
+                        .post('http://'+ip+':1337/api/auth/local/register', {
                             username: username,
                             email: mail,
                             password: password,
