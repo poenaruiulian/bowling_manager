@@ -1,28 +1,22 @@
-import {View, Text, TextInput, TouchableOpacity, Image} from "react-native";
+import {View, Text, TextInput, Image, TouchableOpacity} from "react-native";
 import {styles} from "../styles/styles";
-import {useContext, useState} from "react";
-import {useNavigation} from "@react-navigation/native";
-import axios from 'axios';
-
-import {getData, setData} from "../helpers/asyncStorageFunctions";
+import axios from "axios";
+import {ip} from "../ipConfig";
+import {setData} from "../helpers/asyncStorageFunctions";
 import {AuthContext} from "../context/AuthContext";
-import {ip} from "../ipConfig"
-
-export default function Login(){
+import {useContext, useState} from "react";
+export default function AdminLogin() {
     const [email, setEmail] =useState("")
     const [password, setPassword] = useState("")
-    const navigator = useNavigation();
 
-    const {isLogged,setIsLogged} = useContext(AuthContext)
-    const {admin,setAdmin} = useContext(AuthContext)
-
-    return(
-        <View style = {[styles.container, {
-            justifyContent:"center",
-            flexDirection:"column",
-            gap:"20"
+    const {isLogged,setIsLogged,admin,setAdmin} = useContext(AuthContext)
+    return (
+        <View style={[styles.container, {
+            justifyContent: "center",
+            flexDirection: "column",
+            gap: "20"
         }]}>
-            <Image source={require("../styles/images/available_bowling.png")} style={{height:100,width:100}}/>
+            <Image source={require("../styles/icons/admin.png")} style={{height: 100, width: 100}}/>
             <TextInput
                 placeholder={"Email"}
                 style={styles.inputText}
@@ -50,8 +44,8 @@ export default function Login(){
                             console.log(response.data.user.username)
                             setData("user",response.data.user.username)
                             setData("isLogged","true")
-                            setData("admin","false")
-                            setAdmin(false)
+                            setData("admin","true")
+                            setAdmin(true)
                             setIsLogged(true)
                         })
                         .catch(error => {
@@ -60,16 +54,6 @@ export default function Login(){
                 }}
             >
                 <Text style={styles.btnTxt}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={()=>{navigator.navigate("Register")}}
-            >
-                <Text  style={{color:"#212A3E"}}>No account? Register</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                onPress={()=>{navigator.navigate("Admin")}}
-            >
-                <Image style={{height:40,width:40}} source={require("../styles/icons/admin.png")}/>
             </TouchableOpacity>
         </View>
     )

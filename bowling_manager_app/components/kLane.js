@@ -1,7 +1,8 @@
 import {View, Text, TouchableOpacity, Image} from "react-native";
-import {useState} from "react";
+import {useContext, useState} from "react";
 import {styles} from "../styles/styles";
 import {useNavigation} from "@react-navigation/native";
+import {AuthContext} from "../context/AuthContext";
 
 export function getTime(start){
     const date = new Date(start);
@@ -23,14 +24,21 @@ export default function KLane({players,start,available,number}){
         require("../styles/images/lane5.jpg"),
     ])
     const navigator = useNavigation()
+    const {admin} = useContext(AuthContext)
     return (
         <TouchableOpacity
-            onPress={()=>navigator.navigate("Lane",{
-                number:number,
-                players:players,
-                available:available,
-                start:start
-            })}
+            onPress={()=>{
+               if( available && admin){
+                   navigator.navigate("AddPlayers",{number:number})
+               }else {
+                   navigator.navigate("Lane", {
+                       number: number,
+                       players: players,
+                       available: available,
+                       start: start
+                   })
+               }
+               }}
             style={styles.laneContainer}>
             <Image style={styles.laneImage} source={laneImage[number-1]}/>
             <View style={styles.laneNumber}>

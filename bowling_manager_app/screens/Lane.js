@@ -5,6 +5,10 @@ import {setData} from "../helpers/asyncStorageFunctions";
 import {useNavigation} from "@react-navigation/native";
 import KPlayer from "../components/kPlayer";
 import {getTime} from "../components/kLane";
+import {useContext} from "react";
+import {AuthContext} from "../context/AuthContext";
+import {ip} from "../ipConfig";
+import axios from "axios";
 function getPrice(start){
     // presupunem ca nimeni nu sta 24 de ore sa joace
     const startDate = new Date(start);
@@ -23,6 +27,8 @@ function getPrice(start){
 
 export default function Lane({route}){
     const navigator = useNavigation();
+    const {admin} = useContext(AuthContext)
+    const {lanes, setLanes} = useContext(AuthContext)
     return (
         <View style={styles.container}>
             <KSpacer height={20}/>
@@ -47,17 +53,66 @@ export default function Lane({route}){
                         <View style={{width:"100%",alignItems:"left"}}>
                             <Text style={{fontSize:20}}>Starting time: <Text style={{color:"white"}}>{getTime(route.params.start)}</Text></Text>
                             <KSpacer height={10}/>
-                            <Text style={{fontSize:20}} >Price at the moment (/h): <Text style={{color:"white"}}>{getPrice(route.params.start)} RON</Text></Text>
+                            <Text style={{fontSize:20}} >Price at the moment: <Text style={{color:"white"}}>{getPrice(route.params.start)} RON</Text></Text>
                             <KSpacer height={10}/>
                             <Text style={{fontSize:20}}>Players:</Text>
                         </View>
                         <KSpacer height={10}/>
-                        <FlatList contentContainerStyle={{width:"80%",alignItems:"left",height:"100%"}}data={route.params.players} renderItem={({item})=>
+                        <FlatList showsVerticalScrollIndicator={false} style={{height:"65%", flexGrow:0}} contentContainerStyle={{width:"80%",alignItems:"left"}}data={route.params.players} renderItem={({item})=>
                             <View>
                                 <KPlayer name={item}/>
                                 <KSpacer height={20}/>
                             </View>
                         }/>
+                        <KSpacer height={10}/>
+                        {
+                            admin?
+                                <TouchableOpacity
+                                    style={{
+                                        backgroundColor:"#E76161",
+                                        padding:10,
+                                        borderRadius:10
+                                    }}
+                                    onPress={ async ()=>{
+
+                                        await fetch('http://'+ip+':1337/api/lanes/'+route.params.number,{
+                                            method:"PUT",
+                                            headers: {
+                                                "Content-Type": "application/json",
+                                            },
+                                            body:JSON.stringify({
+                                                "data":
+                                                    {
+                                                        "players":null,
+                                                        "start":null,
+                                                        "available":true
+                                                    }
+                                                }),
+                                        }).then(response=>response.json()).then(res=>console.log(res))
+                                            .catch(err=>console.log(err))
+
+                                        await fetch("http://"+ip+":1337/api/lanes",{method:"GET"})
+                                            .then(resp=>resp.json())
+                                            .then(resp=>{
+                                                let aux = [];
+                                                resp.data.map(lane=>{
+                                                    aux = [...aux,{
+                                                        "players":lane.attributes.players,
+                                                        "start":lane.attributes.start,
+                                                        "available":lane.attributes.available
+                                                    }]
+                                                })
+                                                setLanes(aux);
+                                            })
+                                        navigator.goBack()
+                                        alert("Session on Lane" + route.params.number + " ended!")
+                                    }}
+                                >
+                                    <Text style={{fontSize:15,fontWeight:"bold"}}>Stop session!</Text>
+                                </TouchableOpacity>
+                                :
+                                <Text></Text>
+                        }
                     </View>
             }
         </View>

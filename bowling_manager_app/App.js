@@ -14,6 +14,8 @@ import Lane from "./screens/Lane";
 import {ip} from "./ipConfig"
 
 import {AuthContext} from "./context/AuthContext";
+import AdminLogin from "./screens/AdminLogin";
+import AddPlayers from "./screens/AddPlayers";
 
 
 const Application = () => {
@@ -21,6 +23,7 @@ const Application = () => {
         <Stack.Navigator>
             <Stack.Screen options={{headerShown: false}} name={"Home"} component={Home}/>
             <Stack.Screen options={{headerShown: false}} name={"Lane"} component={Lane}/>
+            <Stack.Screen options={{headerShown: false}} name={"AddPlayers"} component={AddPlayers}/>
         </Stack.Navigator>
     )
 }
@@ -30,7 +33,7 @@ const Auth = () => {
         <Stack.Navigator>
             <Stack.Screen options={{headerShown: false}} name={"Login"} component={Login}/>
             <Stack.Screen options={{headerShown: false}} name={"Register"} component={Register}/>
-            {/*<Stack.Screen name={"Admin"}/>*/}
+            <Stack.Screen options={{headerShown: false}} name={"Admin"} component={AdminLogin}/>
         </Stack.Navigator>
     )
 }
@@ -38,10 +41,14 @@ const Auth = () => {
 export default function App() {
     const [isLogged, setIsLogged]= useState(false)
     const [lanes, setLanes] = useState()
+    const [admin,setAdmin] = useState(false)
     const get = async()=>{
         await getData("isLogged").then(res=>{
             setIsLogged(res === true);
         });
+        await getData("admin").then(res=>{
+            setAdmin(res===true);
+        })
         await fetch("http://"+ip+":1337/api/lanes",{method:"GET"})
             .then(resp=>resp.json())
             .then(resp=>{
@@ -58,7 +65,7 @@ export default function App() {
     }
     useEffect(()=>{get();},[])
     return (
-        <AuthContext.Provider value={{isLogged,setIsLogged,lanes,setLanes}}>
+        <AuthContext.Provider value={{isLogged,setIsLogged,lanes,setLanes,admin,setAdmin}}>
             <NavigationContainer>
                 {
                     isLogged === true ? <Application /> : <Auth />
