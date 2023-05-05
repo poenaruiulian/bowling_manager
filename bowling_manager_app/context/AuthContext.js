@@ -4,6 +4,8 @@ export const AuthContext = createContext({
     isLogged: false,
     setIsLogged: () => {},
     lanes:[],
-    setLanes: () => {}
+    setLanes: () => {},
+    admin:false,
+    setAdmin:()=>{}
 })
 

@@ -9,10 +9,13 @@ import KLane from "../components/kLane";
 
 export default function Home(){
     const navigator = useNavigation();
+
     const {isLogged, setIsLogged} = useContext(AuthContext)
-    const [username,setUsername] = useState("")
     const {lanes, setLanes} = useContext(AuthContext)
+    const {admin, setAdmin} = useContext(AuthContext)
+
     const [numberOfLanes, setNumberOfLanes] = useState(0)
+    const [username,setUsername] = useState("")
     const get = async()=>{
         await getUser().then(res=>{
             setUsername(res)
@@ -23,11 +26,21 @@ export default function Home(){
         <View style={styles.container}>
             <KSpacer height={20}/>
             <View style={styles.header}>
-                <Text style={{fontSize:30}}>{username}</Text>
+                {
+                    admin?
+                        <Text style={{fontSize:30,color:"red"}}>{username}</Text>
+                        :
+                        <Text style={{fontSize:30}}>{username}</Text>
+                }
+
                 <TouchableOpacity
                     onPress={()=>{
                         setData("isLogged",'false');
                         setIsLogged(false)
+                        if(admin){
+                            setAdmin(false)
+                            setData("admin","false")
+                        }
                     }}
                 >
                     <Image source={require("../styles/icons/logout.png")} style={{height:30,width:30}}/>
